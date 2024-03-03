@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تشغيل الفيديو مع الترجمة</title>
+<link rel="stylesheet" href="https://cdn.plyr.io/3.6.4/plyr.css" />
+</head>
+<body>
+
+<div id="videoContainer">
+  <video id="video" controls crossorigin playsinline>
+    <source src="https://abra--7537ca20.api.nocturnal-narwhal.buzz/97ef45c3801bf4c2e2e8c59ab9f5cd159d2d2505/Upgraded.2024.1080p.AMZN.WEB-DL.DDP5.1.Atmos.H.264-FLUX%5BTGx%5D%2FUpgraded.2024.1080p.AMZN.WEB-DL.DDP5.1.Atmos.H.264-FLUX.mkv~hls/index.m3u8?user-id=090d990c9bdcaed7182d937a561434b3&download-id=f2251f06954cf5d6ced3e8ca6f07db5e&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZ2VudCI6Ik1vemlsbGEvNS4wIChpUGhvbmU7IENQVSBpUGhvbmUgT1MgMTZfNSBsaWtlIE1hYyBPUyBYKSBBcHBsZVdlYktpdC82MDUuMS4xNSAoS0hUTUwsIGxpa2UgR2Vja28pIFZlcnNpb24vMTYuNSBNb2JpbGUvMTVFMTQ4IFNhZmFyaS82MDQuMSIsInJlbW90ZUFkZHJlc3MiOiIyYTAwOjU0MDA6ZjAwNDpmMTBmOmM4Nzk6NzRhYjo0ODQyOjM3YTAiLCJkb21haW4iOiJ3ZWJ0b3IuaW8iLCJleHAiOjE3MTAwMzUwMDMsInNlc3Npb25JRCI6IjdaUVg5bm9xZXNsM2F0VEk1MFFoZVdOVW9BREZ6ekRyIiwicmF0ZSI6IjEwTSIsInJvbGUiOiJub2JvZHkifQ.vy2pR4OWzAxL_L3XoJvLsyVkWCJ_ljoKbpX2YjWpKI4&api-key=8acbcf1e-732c-4574-a3bf-27e6a85b86f1" type="application/x-mpegURL">
+    <track src="" kind="subtitles" srclang="ar" label="Arabic" default>
+    Your browser does not support the video tag.
+  </video>
+  <div id="subtitleContainer"></div>
+</div>
+
+<div>
+  <input type="file" id="subtitleFile" accept=".vtt" onchange="loadSubtitle()">
+</div>
+
+<script src="https://cdn.plyr.io/3.6.4/plyr.polyfilled.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const player = new Plyr('#video', {
+    captions: { active: true, update: true, language: 'ar' }
+  });
+
+  player.on('play', () => {
+    subtitleContainer.style.display = 'none';
+  });
+
+  player.on('pause', () => {
+    subtitleContainer.style.display = 'block';
+  });
+
+  player.on('timeupdate', () => {
+    const cue = player.currentTrack.cues[0];
+    if (cue) {
+      subtitleContainer.textContent = cue.text;
+    } else {
+      subtitleContainer.textContent = '';
+    }
+  });
+});
+
+function loadSubtitle() {
+  const fileInput = document.getElementById('subtitleFile');
+  const file = fileInput.files[0];
+  const track = document.querySelector('#video track');
+  const trackElement = track.track;
+
+  const trackURL = URL.createObjectURL(file);
+  track.src = trackURL;
+  trackElement.mode = 'showing';
+}
+</script>
+
+</body>
+</html>
